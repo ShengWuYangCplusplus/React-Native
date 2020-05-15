@@ -2,12 +2,18 @@ import * as React from 'react';
 import { Button,View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import Icon from 'react-native-vector-icons/Ionicons'
 import DemoHomeScreen from './src/pages/home/index'
 import Login from './src/pages/login/index'
+import Mine from './src/pages/mine/index'
 function HomeScreen({navigation}) {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>Home Screen</Text>
+      <Icon name="ios-menu" size={30} color="red" />
+      <Icon name="ios-arrow-down" size={30} color="red" />
+      <Icon name="ios-arrow-forward" size={30} color="red" />
+      
       <Button title="Go to Details" onPress={()=>navigation.navigate('Details')}></Button>
       <Button title="Go to DemoIndex" onPress={()=>navigation.navigate('DemoHome')}></Button>
       <Button title="Login" onPress={()=>navigation.navigate('Login')}></Button>
@@ -38,10 +44,11 @@ function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
+        <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Details" component={DetailsScreen} />
         <Stack.Screen name="DemoHome" component={DemoHomeScreen} />
-        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Mine" component={Mine} />
       </Stack.Navigator>
     </NavigationContainer>
   );

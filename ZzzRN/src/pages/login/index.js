@@ -1,7 +1,6 @@
-import React, { Component } from 'react';
-import { Container, Header, Content, Form,Left, Item, Input, Label } from 'native-base';
-export default class Login extends Component {
-  render() {
+import React from 'react';
+import { Container, Header, Content, Form,Left, Item, Input, Label,Button ,Text,Toast } from 'native-base';
+export default function Login({navigation}) {
     return (
       <Container>
         <Content>
@@ -15,8 +14,8 @@ export default class Login extends Component {
               <Input />
             </Item>
           </Form>
+          <Button block style={{marginTop:30}} success onPress={()=>navigation.navigate('Mine')}><Text> 登         录 </Text></Button>
         </Content>
       </Container>
     );
-  }
 }
