@@ -1,57 +1,86 @@
 import * as React from 'react';
-import { Button,View, Text } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import Icon from 'react-native-vector-icons/Ionicons'
-import DemoHomeScreen from './src/pages/home/index'
-import Login from './src/pages/login/index'
-import Mine from './src/pages/mine/index'
-function HomeScreen({navigation}) {
+import {Text, View} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import Mine from './src/pages/mine/index';
+import {
+  Container,
+  Header,
+  Title,
+  Content,
+  Footer,
+  FooterTab,
+  Button,
+  Left,
+  Right,
+  Body,
+  Icon,
+  Accordion,
+  Card,
+  CardItem,
+  DatePicker,
+  Badge,
+  Thumbnail,
+  Item,
+  Input,
+  Toast,
+} from 'native-base';
+function HomeScreen() {
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Home Screen</Text>
-      <Icon name="ios-menu" size={30} color="red" />
-      <Icon name="ios-arrow-down" size={30} color="red" />
-      <Icon name="ios-arrow-forward" size={30} color="red" />
-      
-      <Button title="Go to Details" onPress={()=>navigation.navigate('Details')}></Button>
-      <Button title="Go to DemoIndex" onPress={()=>navigation.navigate('DemoHome')}></Button>
-      <Button title="Login" onPress={()=>navigation.navigate('Login')}></Button>
-    </View>
-  );
-}
-function DetailsScreen({ navigation }) {
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Details Screen</Text>
-      <Button
-        title="Go to Details... again"
-        onPress={() => navigation.push('Details')}
-      />
-      <Button title="Go to Home" onPress={() => navigation.navigate('Home')} />
-      <Button title="Go back" onPress={() => navigation.goBack()} />
-      <Button
-        title="Go back to first screen in stack"
-        onPress={() => navigation.popToTop()}
-      />
+    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <Text>Home!</Text>
     </View>
   );
 }
 
-const Stack = createStackNavigator();
+function SettingsScreen() {
+  return (
+    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <Text>Settings!</Text>
+    </View>
+  );
+}
 
-function App() {
+const Tab = createBottomTabNavigator();
+
+export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Details" component={DetailsScreen} />
-        <Stack.Screen name="DemoHome" component={DemoHomeScreen} />
-        <Stack.Screen name="Mine" component={Mine} />
-      </Stack.Navigator>
+      <Header searchBar rounded>
+        <Item>
+          <Icon name="ios-search" />
+          <Input placeholder="Search" />
+          <Icon name="ios-people" />
+        </Item>
+        <Button transparent>
+          <Text>Search</Text>
+        </Button>
+      </Header>
+      <Tab.Navigator
+        screenOptions={({route}) => ({
+          tabBarIcon: ({focused, color, size}) => {
+            let iconName;
+            if (route.name === 'Home') {
+              iconName = focused
+                ? 'ios-information-circle'
+                : 'ios-information-circle-outline';
+            } else if (route.name === 'Settings') {
+              iconName = focused ? 'ios-list-box' : 'ios-list';
+            }else if(route.name==='Test'){
+              iconName=focused?'md-contact':'md-contact'
+            }
+            return <Ionicons name={iconName} size={size} color={color} />;
+          },
+        })}
+        tabBarOptions={{
+          activeTintColor: 'tomato',
+          inactiveTintColor: 'gray',
+        }}>
+        <Tab.Screen name="Home" component={HomeScreen} />
+        <Tab.Screen name="Settings" component={SettingsScreen} />
+        <Tab.Screen name="Test" component={Mine} />
+      </Tab.Navigator>
     </NavigationContainer>
   );
 }
-
-export default App;
