@@ -23,3 +23,15 @@ export const get = (url, params) => {
       alert(error)
     })
 }
+export const post=(url,data)=>{
+  return fetch(url, {
+    body: JSON.stringify(data), // must match 'Content-Type' header
+    headers: {
+      'content-type': 'application/json'
+    },
+    method: 'POST', // *GET, POST, PUT, DELETE, etc.
+  })
+  .then(response =>response.json()).catch((error) => {
+    alert(error)
+  })// parses response to JSON
+}

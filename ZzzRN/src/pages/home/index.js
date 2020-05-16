@@ -221,7 +221,7 @@ class App extends Component {
         }
         </Content>
         
-        <Footer>
+        {/* <Footer>
           <FooterTab>
             <Button vertical>
               <Icon name="apps" />
@@ -240,7 +240,7 @@ class App extends Component {
               <Text>Contact</Text>
             </Button>
           </FooterTab>
-        </Footer>
+        </Footer> */}
       </Container>
     )
   }

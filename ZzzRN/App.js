@@ -1,102 +1,142 @@
-import * as React from 'react';
-import { Text, View } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createStackNavigator } from '@react-navigation/stack';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import Mine from './src/pages/mine/index';
-import Login from './src/pages/login/index.js'
+import React from 'react';
+import {View} from 'react-native';
+import {AuthContext} from './src/Context';
+import {NavigationContainer} from '@react-navigation/native';
 import {
-  Container,
-  Header,
-  Title,
-  Content,
-  Footer,
-  FooterTab,
-  Button,
-  Left,
-  Right,
-  Body,
-  Icon,
-  Accordion,
-  Card,
-  CardItem,
-  DatePicker,
-  Badge,
-  Thumbnail,
-  Item,
-  Input,
-  Toast,
-} from 'native-base';
-function HomeScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Home!</Text>
-    </View>
-  );
-}
+  createStackNavigator,
+  CardStyleInterpolators,
+} from '@react-navigation/stack';
+import {createDrawerNavigator} from '@react-navigation/drawer';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import {
+  SettingScreen,
+  MineScreen,
+  SplashScreen,
+} from './src/Screen';
+import SignInScreen from './src/pages/login/index'
+import HomeScreen from './src/pages/home/index'
 
-function SettingsScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Settings!</Text>
-    </View>
-  );
-}
+const AuthStack = createStackNavigator();
+const AuthStackScreen = () => (
+  <AuthStack.Navigator headerMode="none">
+    <AuthStack.Screen name="SignIn" component={SignInScreen} />
+  </AuthStack.Navigator>
+);
+
 
 const Tab = createBottomTabNavigator();
-const Stack = createStackNavigator();
-export default function App() {
-  const isLogin = true;
+const TabBarIcon = (focused, color) => {
   return (
-    <NavigationContainer>
-      <Header searchBar rounded>
-        <Item>
-          <Icon name="ios-search" />
-          <Input placeholder="Search" />
-          <Icon name="ios-people" />
-        </Item>
-        <Button transparent>
-          <Text>Search</Text>
-        </Button>
-      </Header>
-      {
-        isLogin === true ? (
-          <>
-            <Tab.Navigator
-              screenOptions={({ route }) => ({
-                tabBarIcon: ({ focused, color, size }) => {
-                  let iconName;
-                  if (route.name === 'Home') {
-                    iconName = focused
-                      ? 'ios-information-circle'
-                      : 'ios-information-circle-outline';
-                  } else if (route.name === 'Settings') {
-                    iconName = focused ? 'ios-list-box' : 'ios-list';
-                  } else if (route.name === 'Test') {
-                    iconName = focused ? 'md-contact' : 'md-contact'
-                  }
-                  return <Ionicons name={iconName} size={size} color={color} />;
-                },
-              })}
-              tabBarOptions={{
-                activeTintColor: 'tomato',
-                inactiveTintColor: 'gray',
-              }}>
-              <Tab.Screen name="Home" component={HomeScreen} />
-              <Tab.Screen name="Settings" component={SettingsScreen} />
-              <Tab.Screen name="Test" component={Mine} />
-            </Tab.Navigator>
-          </>
-        ) : (
-            <>
-            <Stack.Navigator>
-              <Stack.Screen name="Login" component={Login} />
-            </Stack.Navigator>
-            </>
-          )
-      }
+    <View
+      style={{
+        width: focused ? 24 : 18,
+        height: focused ? 24 : 18,
+        backgroundColor: color,
+      }}
+    />
+  );
+};
 
-    </NavigationContainer>
+function TabScreen() {
+  return (
+    <Tab.Navigator
+    screenOptions={({ route }) => ({
+      tabBarIcon: ({ focused, color, size }) => {
+        let iconName;
+        if (route.name === 'Home') {
+          iconName = focused
+            ? 'ios-information-circle'
+            : 'ios-information-circle-outline';
+        } else if (route.name === 'Mine') {
+          iconName = focused ? 'ios-list-box' : 'ios-list';
+        } else if (route.name === 'Setting') {
+          iconName = focused ? 'md-contact' : 'md-contact'
+        }
+        return <Ionicons name={iconName} size={size} color={color} />;
+      },
+    })}
+    tabBarOptions={{
+      activeTintColor: 'tomato',
+      inactiveTintColor: 'gray',
+    }}
+     >
+      <Tab.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{title: '首页'}}
+      />
+      <Tab.Screen
+        name="Mine"
+        component={MineScreen}
+        options={{title: '我的'}}
+      />
+      <Tab.Screen
+        name="Setting"
+        component={SettingScreen}
+        options={{title: '设置'}}
+      />
+    </Tab.Navigator>
   );
 }
+
+const RootStack = createStackNavigator();
+const RootStackScreen = ({userToken = false}) => (
+  <RootStack.Navigator headerMode="none">
+    {userToken ? (
+      <RootStack.Screen
+        name="App"
+        component={TabScreen}
+        options={{
+          animationEnabled: false,
+        }}
+      />
+    ) : (
+      <RootStack.Screen
+        name="Auth"
+        component={AuthStackScreen}
+        options={{
+          animationEnabled: false,
+        }}
+      />
+    )}
+  </RootStack.Navigator>
+);
+
+export default () => {
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [userToken, setUserToken] = React.useState(null);
+
+  const authContext = React.useMemo(() => {
+    return {
+      signIn: () => {
+        setIsLoading(false);
+        setUserToken('asdf');
+      },
+      signUp: () => {
+        setIsLoading(false);
+        setUserToken('asdf');
+      },
+      signOut: () => {
+        setIsLoading(false);
+        setUserToken(null);
+      },
+    };
+  }, []);
+
+  React.useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
+  }, []);
+  if (isLoading) {
+    return <SplashScreen />;
+  }
+  return (
+    <AuthContext.Provider value={authContext}>
+      <NavigationContainer>
+        <RootStackScreen userToken={userToken} />
+      </NavigationContainer>
+    </AuthContext.Provider>
+  );
+};
