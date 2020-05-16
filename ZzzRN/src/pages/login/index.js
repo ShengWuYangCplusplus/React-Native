@@ -19,7 +19,6 @@ export default function Login({ navigation }) {
       .then(response => {
         response.json().then(
           res => {
-            console.log("login", res)
             if(res.code===0&&res.token){
               signIn()
             }else{

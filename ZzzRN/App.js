@@ -16,6 +16,7 @@ import {
 } from './src/Screen';
 import SignInScreen from './src/pages/login/index'
 import HomeScreen from './src/pages/home/index'
+import MeScreen from './src/pages/me/index'
 
 const AuthStack = createStackNavigator();
 const AuthStackScreen = () => (
@@ -68,7 +69,7 @@ function TabScreen() {
       />
       <Tab.Screen
         name="Mine"
-        component={MineScreen}
+        component={MeScreen}
         options={{title: '我的'}}
       />
       <Tab.Screen

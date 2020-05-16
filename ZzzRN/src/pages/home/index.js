@@ -52,7 +52,6 @@ class App extends Component {
   }
   async loadData(req) {
     get('http://youziweb.cn:8888/api/alarm', req).then((res) => {
-      console.log('result', res);
       this.setState({
         ...this.state,
         alarmList: res.data
