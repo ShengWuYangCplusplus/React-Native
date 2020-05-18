@@ -1,3 +1,13 @@
+
+import DeviceStorage from '../Storage/DeviceStorage';
+let theToken=null;
+DeviceStorage.get('token').then((token)=>{
+  if(token == null || token == ''){
+        
+  } else {
+    theToken=token
+  }
+})
 export const get = (url, params) => {
   if (params) {
     let paramsArray = [];
@@ -14,7 +24,7 @@ export const get = (url, params) => {
     method: 'GET',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
-      "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiYWJjIiwiaWRlbnRpdHkiOjEsInJvbGVJZCI6MSwiaWF0IjoxNTg5NDYwMTE0LCJleHAiOjE1ODk3MTkzMTQsImlzcyI6ImVuZ29vLmNuIn0.t07eF_PToqLsX4GHpudvOHPd8T6HqIDYhAPJSgiZpGU"
+      "Authorization": `Bearer ${theToken}`
     },
   })
     .then((response) => { 
