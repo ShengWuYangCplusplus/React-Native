@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {View, Button, Text, Image} from 'react-native';
 import ImagePicker from 'react-native-image-picker';
-import {get} from '../../http/fetch'
+import {get} from '../../http/fetch';
 function BaseCenterView({children}) {
   return (
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -9,7 +9,6 @@ function BaseCenterView({children}) {
     </View>
   );
 }
-
 var photoOptions = {
   //底部弹出框选项
   title: '请选择',
@@ -30,18 +29,32 @@ class Me extends Component {
     this.state = {_imageObj: null, imgURL: null};
   }
   openMycamera() {
-    ImagePicker.showImagePicker(photoOptions, (response) => {
-      if (response.didCancel) {
+    ImagePicker.showImagePicker(photoOptions, (image) => {
+      if (image.didCancel) {
         console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      } else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton);
+      } else if (image.error) {
+        console.log('ImagePicker Error: ', image.error);
+      } else if (image.customButton) {
+        console.log('User tapped custom button: ', image.customButton);
       } else {
+        console.log('image', image);
         this.setState({
-          _imageObj: response,
-          imgURL: response.uri,
+          _imageObj: image,
+          imgURL: image.uri,
         });
+        let str = 'data:image/jpg;base64,' + image.data;
+        // let url = 'http://youziweb.cn:8888/rnupload/image';
+        let url = 'http://192.168.0.110:8888/rnupload/image';
+        fetch(url, {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: `avatar=${str}`
+        }).then(function(response) {
+          console.log(response)
+        });
+         
       }
     });
   }
@@ -50,37 +63,6 @@ class Me extends Component {
       alert('照片不能为空');
       return false;
     }
-    let params = this.state._imageObj;
-    this._uploadImage('/image', params);
-  }
-  _uploadImage(url, params) {
-    let file = {
-      uri: params.uri,
-      type: 'multipart/form-data',
-      name: 'image.jpg',
-    };
-    let formdata = new FormData();
-    formdata.append('avatar', file);
-    console.log(formdata)
-    get('http://youziweb.cn:8888/api/alarm', {index:0,size:10}).then((res) => {
-      console.log(res)
-    });
-    fetch('http://youziweb.cn:8888/upload/image',{
-        method:'POST',
-        body:formdata,
-        headers : {
-            'Accept' : 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;',
-            'Content-Type' : 'text/plain;charset=UTF-8',
-            'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.89 Safari/537.36',
-            'Host' : 'youziweb.cn',
-        }
-    }).then(
-        res=>{
-            console.log('res',res)
-        }
-    ).catch(err=>{
-        console.log('err',err)
-    })
   }
   render() {
     return (

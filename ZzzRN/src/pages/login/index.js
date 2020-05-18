@@ -3,6 +3,7 @@ import { AuthContext } from '../../Context';
 import { Container, Header, Content, Title, Form, Left, Right, Body, Item, Input, Label, Button, Text, Toast } from 'native-base';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { post } from '../../http/fetch'
+import DeviceStorage from '../../Storage/DeviceStorage';
 var Buffer = require('buffer').Buffer;
 
 export default function Login({ navigation }) {
@@ -21,6 +22,7 @@ export default function Login({ navigation }) {
           res => {
             if(res.code===0&&res.token){
               signIn()
+              DeviceStorage.save("token",res.token);
             }else{
               alert(res.des)
             }

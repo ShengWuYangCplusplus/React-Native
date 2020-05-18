@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
   Container,
   Header,
@@ -28,39 +28,39 @@ import {
   Thumbnail,
   Item,
   Input,
-  Toast
+  Toast,
 } from 'native-base';
-import { Image, StyleSheet } from 'react-native';
-import { get } from '../../http/fetch';
+import {Image, StyleSheet} from 'react-native';
+import {get} from '../../http/fetch';
 // import CheckBoxExample from './src/components/common/CheckBoxExample'
 // import SpinnerExample from './src/components/common/SpinnerExample'
 
-
+import DeviceStorage from '../../Storage/DeviceStorage';
 
 class App extends Component {
   constructor() {
-    super()
+    super();
     this.state = {
       chosenDate: new Date(),
       alarmList: [],
-      showToast: false
-    }
+      showToast: false,
+    };
     this.setDate = this.setDate.bind(this);
   }
   setDate(newDate) {
-    this.setState({ chosenDate: newDate });
+    this.setState({chosenDate: newDate});
   }
   async loadData(req) {
     get('http://youziweb.cn:8888/api/alarm', req).then((res) => {
       this.setState({
         ...this.state,
-        alarmList: res.data
-      })
+        alarmList: res.data,
+      });
     });
   }
   componentDidMount() {
     console.log('hello React Native');
-    this.loadData({ index: 0, size: 10 });
+    this.loadData({index: 0, size: 10});
   }
   render() {
     return (
@@ -87,7 +87,10 @@ class App extends Component {
               </Left>
             </CardItem>
             <CardItem cardBody>
-              <Image source={require('../../assets/img/car_01.jpg')} style={{ height: 200, width: null, flex: 1 }} />
+              <Image
+                source={require('../../assets/img/car_01.jpg')}
+                style={{height: 200, width: null, flex: 1}}
+              />
             </CardItem>
             <CardItem>
               <Left>
@@ -118,7 +121,10 @@ class App extends Component {
               </Left>
             </CardItem>
             <CardItem cardBody>
-              <Image source={require('../../assets/img/car_02.jpg')} style={{ height: 200, width: null, flex: 1 }} />
+              <Image
+                source={require('../../assets/img/car_02.jpg')}
+                style={{height: 200, width: null, flex: 1}}
+              />
             </CardItem>
             <CardItem>
               <Left>
@@ -149,7 +155,10 @@ class App extends Component {
               </Left>
             </CardItem>
             <CardItem cardBody>
-              <Image source={require('../../assets/img/car_03.jpg')} style={{ height: 200, width: null, flex: 1 }} />
+              <Image
+                source={require('../../assets/img/car_03.jpg')}
+                style={{height: 200, width: null, flex: 1}}
+              />
             </CardItem>
             <CardItem>
               <Left>
@@ -180,7 +189,10 @@ class App extends Component {
               </Left>
             </CardItem>
             <CardItem cardBody>
-              <Image source={require('../../assets/img/car_04.jpg')} style={{ height: 200, width: null, flex: 1 }} />
+              <Image
+                source={require('../../assets/img/car_04.jpg')}
+                style={{height: 200, width: null, flex: 1}}
+              />
             </CardItem>
             <CardItem>
               <Left>
@@ -200,48 +212,27 @@ class App extends Component {
               </Right>
             </CardItem>
           </Card>
-          {
-          this.state.alarmList.map((item,idx)=>
+          {this.state.alarmList.map((item, idx) => (
             <Card key={idx}>
-            <CardItem>
-              <Left>
-                {/* <Thumbnail source={{uri: 'Image URL'}} /> */}
-                <Body>
-                  <Text>{item.time}</Text>
-                  <Text note>{item.address}</Text>
-                </Body>
-              </Left>
-            </CardItem>
-            <CardItem cardBody>
-              <Image source={require('../../assets/img/air01.jpg')} style={{ height: 200, width: 400, flex: 1 }} />
-            </CardItem>
-          </Card>
-          )
-        }
+              <CardItem>
+                <Left>
+                  <Body>
+                    <Text>{item.time}</Text>
+                    <Text note>{item.address}</Text>
+                  </Body>
+                </Left>
+              </CardItem>
+              <CardItem cardBody>
+                <Image
+                  source={require('../../assets/img/air01.jpg')}
+                  style={{height: 200, width: 400, flex: 1}}
+                />
+              </CardItem>
+            </Card>
+          ))}
         </Content>
-        
-        {/* <Footer>
-          <FooterTab>
-            <Button vertical>
-              <Icon name="apps" />
-              <Text>Apps</Text>
-            </Button>
-            <Button vertical>
-              <Icon name="camera" />
-              <Text>Camera</Text>
-            </Button>
-            <Button vertical active>
-              <Icon active name="navigate" />
-              <Text>Navigate</Text>
-            </Button>
-            <Button vertical>
-              <Icon name="person" />
-              <Text>Contact</Text>
-            </Button>
-          </FooterTab>
-        </Footer> */}
       </Container>
-    )
+    );
   }
 }
 
