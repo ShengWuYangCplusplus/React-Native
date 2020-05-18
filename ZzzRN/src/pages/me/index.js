@@ -1,10 +1,11 @@
-import React, {Component} from 'react';
-import {View, Button, Text, Image} from 'react-native';
-import ImagePicker from 'react-native-image-picker';
-import {get} from '../../http/fetch'
-function BaseCenterView({children}) {
+import React, { Component } from 'react';
+import { View, Button, Text, Image } from 'react-native';
+// import ImagePicker from 'react-native-image-picker';
+import CropPicker from 'react-native-image-crop-picker';
+import { get } from '../../http/fetch'
+function BaseCenterView({ children }) {
   return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       {children}
     </View>
   );
@@ -27,22 +28,41 @@ var photoOptions = {
 class Me extends Component {
   constructor(props) {
     super(props);
-    this.state = {_imageObj: null, imgURL: null};
+    this.state = { _imageObj: null, imgURL: null };
   }
   openMycamera() {
-    ImagePicker.showImagePicker(photoOptions, (response) => {
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      } else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton);
-      } else {
-        this.setState({
-          _imageObj: response,
-          imgURL: response.uri,
-        });
-      }
+    CropPicker.openPicker({
+      multiple: false
+    })
+    .then(image => {
+      // 这里将会获取到选中图片的数组
+      // uploading file here ...
+      console.log('images 数组：',image)
+      // this.setState({imgURL:image.path,_imageObj:image})
+      let form = new FormData();
+      let path = image.path;
+      let filename = path.substr(path.lastIndexOf('/') + 1);
+      let file = { uri: path, type: 'multipart/form-data', name: filename };
+      form.append('avatar', file);
+      // 调用fetch发送请求
+      fetch('http://youziweb.cn:8888/upload/image', {
+        method: 'POST',
+        body: form,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        }
+      })
+        .then((response) => {
+          // success goes here
+          console.log('success',response)
+          
+        }).catch((error) => {
+          // error goes here
+          console.log("error",error)
+        })
+    })
+    .catch((error)=>{
+      console.log(error)
     });
   }
   confirmUpload() {
@@ -50,37 +70,11 @@ class Me extends Component {
       alert('照片不能为空');
       return false;
     }
-    let params = this.state._imageObj;
-    this._uploadImage('/image', params);
+    // this._uploadImage();
   }
-  _uploadImage(url, params) {
-    let file = {
-      uri: params.uri,
-      type: 'multipart/form-data',
-      name: 'image.jpg',
-    };
-    let formdata = new FormData();
-    formdata.append('avatar', file);
-    console.log(formdata)
-    get('http://youziweb.cn:8888/api/alarm', {index:0,size:10}).then((res) => {
-      console.log(res)
-    });
-    fetch('http://youziweb.cn:8888/upload/image',{
-        method:'POST',
-        body:formdata,
-        headers : {
-            'Accept' : 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;',
-            'Content-Type' : 'text/plain;charset=UTF-8',
-            'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.89 Safari/537.36',
-            'Host' : 'youziweb.cn',
-        }
-    }).then(
-        res=>{
-            console.log('res',res)
-        }
-    ).catch(err=>{
-        console.log('err',err)
-    })
+  _uploadImage() {
+    // image 为单个图片对象
+   
   }
   render() {
     return (
@@ -88,8 +82,8 @@ class Me extends Component {
         <Text>我的</Text>
         <Button title="上传照片" onPress={() => this.openMycamera()}></Button>
         <Image
-          source={{uri: this.state.imgURL}}
-          style={{height: 300, width: 300}}
+          source={{ uri: this.state.imgURL }}
+          style={{ height: 300, width: 300 }}
         />
         <Button
           title="确认上传"

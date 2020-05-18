@@ -52,14 +52,16 @@ class App extends Component {
   }
   async loadData(req) {
     get('http://youziweb.cn:8888/api/alarm', req).then((res) => {
-      this.setState({
-        ...this.state,
-        alarmList: res.data
-      })
+        res=>{
+          this.setState({
+            ...this.state,
+            alarmList:res.data
+          })
+        }
     });
   }
   componentDidMount() {
-    console.log('hello React Native');
+    console.log('hello React Native112');
     this.loadData({ index: 0, size: 10 });
   }
   render() {
