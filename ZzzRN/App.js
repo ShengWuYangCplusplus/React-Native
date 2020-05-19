@@ -9,7 +9,7 @@ import {
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { MineScreen, SplashScreen} from './src/Screen';
+import SplashScreen from './src/pages/loading/index';
 import MessageScreen from './src/pages/message/index'
 import SignInScreen from './src/pages/login/index';
 import HomeScreen from './src/pages/home/index';

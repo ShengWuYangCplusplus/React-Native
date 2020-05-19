@@ -44,7 +44,7 @@ export default function Me() {
       setUserInfo(res)
      }
    )
-  })
+  },[])
   const keyExtractor = (item, index) => index.toString();
   const renderItem = ({item}) => (
     <ListItem
