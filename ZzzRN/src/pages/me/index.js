@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {View, Button, Text, Image} from 'react-native';
 import ImagePicker from 'react-native-image-picker';
+import axios from 'axios'
 import {get} from '../../http/fetch';
 function BaseCenterView({children}) {
   return (
@@ -38,31 +39,26 @@ class Me extends Component {
         console.log('User tapped custom button: ', image.customButton);
       } else {
         console.log('image', image);
-        this.setState({
-          _imageObj: image,
-          imgURL: image.uri,
-        });
         let str = 'data:image/jpg;base64,' + image.data;
-        // let url = 'http://youziweb.cn:8888/rnupload/image';
-        let url = 'http://192.168.0.110:8888/rnupload/image';
-        fetch(url, {
-          method: "POST",
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          body: `avatar=${str}`
-        }).then(function(response) {
-          console.log(response)
-        });
-         
+        console.log(str)
+        let url = 'http://youziweb.cn:8888/rnupload/image';
+        axios.post(url,{avatar:str}).then(result=>{
+          console.log('ressss',result)
+          let res=result.data
+          if(res.code===0){
+            this.setState({
+              ...this.state,imgURL:`http://youziweb.cn:8888/${res.path}`
+            })
+          }
+        }).catch(
+          err=>{
+            console.log('err',err)
+          }
+        ).finally(()=>{
+          
+        })
       }
     });
-  }
-  confirmUpload() {
-    if (!this.state.imgURL) {
-      alert('照片不能为空');
-      return false;
-    }
   }
   render() {
     return (
@@ -73,10 +69,6 @@ class Me extends Component {
           source={{uri: this.state.imgURL}}
           style={{height: 300, width: 300}}
         />
-        <Button
-          title="确认上传"
-          success
-          onPress={() => this.confirmUpload()}></Button>
       </BaseCenterView>
     );
   }
