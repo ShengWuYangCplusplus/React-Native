@@ -9,14 +9,12 @@ import {
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {
-  SettingScreen,
-  MineScreen,
-  SplashScreen,
-} from './src/Screen';
-import SignInScreen from './src/pages/login/index'
-import HomeScreen from './src/pages/home/index'
-import MeScreen from './src/pages/me/index'
+import { MineScreen, SplashScreen} from './src/Screen';
+import MessageScreen from './src/pages/message/index'
+import SignInScreen from './src/pages/login/index';
+import HomeScreen from './src/pages/home/index';
+import MeScreen from './src/pages/me/index';
+import DeviceStorage from './src/Storage/DeviceStorage';
 
 const AuthStack = createStackNavigator();
 const AuthStackScreen = () => (
@@ -24,7 +22,6 @@ const AuthStackScreen = () => (
     <AuthStack.Screen name="SignIn" component={SignInScreen} />
   </AuthStack.Navigator>
 );
-
 
 const Tab = createBottomTabNavigator();
 const TabBarIcon = (focused, color) => {
@@ -42,41 +39,37 @@ const TabBarIcon = (focused, color) => {
 function TabScreen() {
   return (
     <Tab.Navigator
-    screenOptions={({ route }) => ({
-      tabBarIcon: ({ focused, color, size }) => {
-        let iconName;
-        if (route.name === 'Home') {
-          iconName = focused
-            ? 'ios-information-circle'
-            : 'ios-information-circle-outline';
-        } else if (route.name === 'Mine') {
-          iconName = focused ? 'ios-list-box' : 'ios-list';
-        } else if (route.name === 'Setting') {
-          iconName = focused ? 'md-contact' : 'md-contact'
-        }
-        return <Ionicons name={iconName} size={size} color={color} />;
-      },
-    })}
-    tabBarOptions={{
-      activeTintColor: 'tomato',
-      inactiveTintColor: 'gray',
-    }}
-     >
+      screenOptions={({route}) => ({
+        tabBarIcon: ({focused, color, size}) => {
+          let iconName;
+          if (route.name === 'Home') {
+            iconName = focused
+              ? 'ios-home'
+              : 'ios-home';
+          } else if (route.name === 'Mine') {
+            iconName = focused ? 'md-contact' : 'md-contact';
+          } else if (route.name === 'Message') {
+            iconName = focused ? 'md-text' : 'md-text';
+          }
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+      })}
+      tabBarOptions={{
+        activeTintColor: 'tomato',
+        inactiveTintColor: 'gray',
+      }}>
       <Tab.Screen
         name="Home"
         component={HomeScreen}
         options={{title: '首页'}}
       />
       <Tab.Screen
-        name="Mine"
-        component={MeScreen}
-        options={{title: '我的'}}
+        name="Message"
+        component={MessageScreen}
+        options={{title: '消息'}}
       />
-      <Tab.Screen
-        name="Setting"
-        component={SettingScreen}
-        options={{title: '设置'}}
-      />
+      <Tab.Screen name="Mine" component={MeScreen} options={{title: '我的'}} />
+      
     </Tab.Navigator>
   );
 }
@@ -107,12 +100,13 @@ const RootStackScreen = ({userToken = false}) => (
 export default () => {
   const [isLoading, setIsLoading] = React.useState(true);
   const [userToken, setUserToken] = React.useState(null);
-
   const authContext = React.useMemo(() => {
     return {
       signIn: () => {
         setIsLoading(false);
-        setUserToken('asdf');
+        let token = DeviceStorage.get('token').then(() => {
+          setUserToken(token);
+        });
       },
       signUp: () => {
         setIsLoading(false);

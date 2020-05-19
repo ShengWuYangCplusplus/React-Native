@@ -32,10 +32,12 @@ import {
 } from 'native-base';
 import { Image, StyleSheet } from 'react-native';
 import { get } from '../../http/fetch';
+import {ListItem} from 'react-native-elements'
 
 export default function Mine({ navigation }) {
   const [alarmList, setList] = useState([])
-
+  
+  keyExtractor = (item, index) => index.toString()
   useEffect(() => {
     const fetchData = async () => {
       const result = await get('http://youziweb.cn:8888/api/alarm', { index: 0, size: 10 })
