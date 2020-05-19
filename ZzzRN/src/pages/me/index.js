@@ -21,8 +21,10 @@ var photoOptions = {
     path: 'images',
   },
 };
-
+const defaultAvatar=""
+const baseUrl="http://youziweb.cn:8888";
 export default function Me() {
+  const [avatarUrl,setAvatarUrl]=React.useState('http://youziweb.cn:8888/uploads/image/1589854508457.jpg' )
   const [userInfo,setUserInfo]=React.useState({})
   const {signOut} = React.useContext(AuthContext);
   const list = [
@@ -42,6 +44,9 @@ export default function Me() {
      res=>{
        console.log("userinfo",res)
       setUserInfo(res)
+      if(res.avatarPath){
+        setAvatarUrl(baseUrl+res.avatarPath)
+      }
      }
    )
   },[])
@@ -71,15 +76,16 @@ export default function Me() {
         let str = 'data:image/jpg;base64,' + image.data;
         let url = 'http://youziweb.cn:8888/rnupload/image';
         axios
-          .post(url, {avatar: str})
+          .post(url, {avatar: str,ID:userInfo.id})
           .then((result) => {
             let res = result.data;
             if (res.code === 0) {
               setImgUrl(`http://youziweb.cn:8888/${res.path}`);
+              setAvatarUrl(`http://youziweb.cn:8888/${res.path}`);
             }
           })
           .catch((err) => {
-            console.log('err', err);
+            console.log('errrrrrrrrrrrrrrr', err);
           })
           .finally(() => {});
       }
@@ -89,10 +95,11 @@ export default function Me() {
     <View>
       <ListItem
         key={'aaa'}
-        leftAvatar={{ source: { uri: 'http://youziweb.cn:8888/uploads/image/1589854508457.jpg' } }}
+        leftAvatar={{ source: { uri:avatarUrl } }}
         title={userInfo.name}
-        subtitle={userInfo.departmentId}
+        subtitle={userInfo.id}
         bottomDivider
+        onPress={openMycamera}
       />
       {/* <Button block onPress={openMycamera}>
         <Text>选择头像{name}</Text>
