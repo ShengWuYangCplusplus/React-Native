@@ -5,7 +5,7 @@ import axios from 'axios'
 import {get} from '../../http/fetch';
 function BaseCenterView({children}) {
   return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       {children}
     </View>
   );
@@ -27,7 +27,7 @@ var photoOptions = {
 class Me extends Component {
   constructor(props) {
     super(props);
-    this.state = {_imageObj: null, imgURL: null};
+    this.state = { _imageObj: null, imgURL: null };
   }
   openMycamera() {
     ImagePicker.showImagePicker(photoOptions, (image) => {
@@ -66,8 +66,8 @@ class Me extends Component {
         <Text>我的</Text>
         <Button title="上传照片" onPress={() => this.openMycamera()}></Button>
         <Image
-          source={{uri: this.state.imgURL}}
-          style={{height: 300, width: 300}}
+          source={{ uri: this.state.imgURL }}
+          style={{ height: 300, width: 300 }}
         />
       </BaseCenterView>
     );
