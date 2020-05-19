@@ -40,10 +40,8 @@ class Me extends Component {
       } else {
         console.log('image', image);
         let str = 'data:image/jpg;base64,' + image.data;
-        console.log(str)
         let url = 'http://youziweb.cn:8888/rnupload/image';
         axios.post(url,{avatar:str}).then(result=>{
-          console.log('ressss',result)
           let res=result.data
           if(res.code===0){
             this.setState({
