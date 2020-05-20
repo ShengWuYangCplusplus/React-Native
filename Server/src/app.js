@@ -17,6 +17,8 @@ var auth = require('./middlewares/auth.js')
 
 var routers = require('./routes')
 var app = express();
+
+
 const bodyParser = require('body-parser');
 
 app.use(compress())
