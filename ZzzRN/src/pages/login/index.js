@@ -70,7 +70,7 @@ export default function Login() {
       <Content padder>
         <Form>
           <Input
-            value={'admin'}
+            defaultValue={'admin'}
             ref={accountRef}
             placeholder="Account"
             leftIcon={<Icon name="logo-github" size={20} color="grey" />}
@@ -79,7 +79,7 @@ export default function Login() {
           />
           <Input
             ref={pwdRef}
-            value={'ysw123'}
+            defaultValue="ysw123"
             placeholder="Password"
             leftIcon={<Icon name="ios-key" size={20} color="grey" />}
             leftIconContainerStyle={{width: 30}}
