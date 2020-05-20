@@ -14,7 +14,7 @@ const users = [
     avatar: 'https://s3.amazonaws.com/uifaces/faces/twitter/brynn/128.jpg',
   },
 ];
-export default function MessageScreen() {
+export default function MessageScreen({navigation}) {
   return (
     <Card containerStyle={{padding: 0}}>
       {users.map((u, i) => {
@@ -24,6 +24,7 @@ export default function MessageScreen() {
             roundAvatar
             title={u.name}
             avatar={{uri: u.avatar}}
+            onPress={()=>navigation.navigate('SendDetail')}
           />
         );
       })}

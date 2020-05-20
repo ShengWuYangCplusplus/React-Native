@@ -15,14 +15,30 @@ import SignInScreen from './src/pages/login/index';
 import HomeScreen from './src/pages/home/index';
 import MeScreen from './src/pages/me/index';
 import DeviceStorage from './src/Storage/DeviceStorage';
-
+import Send from './src/pages/send/index'
 const AuthStack = createStackNavigator();
 const AuthStackScreen = () => (
   <AuthStack.Navigator headerMode="none">
     <AuthStack.Screen name="SignIn" component={SignInScreen} />
   </AuthStack.Navigator>
 );
+const DefaultStack=createStackNavigator()
 
+function DefaultScreen(){
+  return (
+    <DefaultStack.Navigator  headerMode="none">
+      <DefaultStack.Screen 
+        name="App"
+        component={TabScreen}
+        options={{
+          animationEnabled: false,
+        }}></DefaultStack.Screen>
+      <DefaultStack.Screen name="SendDetail" component={Send}  options={{
+          animationEnabled: false,
+        }}/>
+    </DefaultStack.Navigator>
+  )
+}
 const Tab = createBottomTabNavigator();
 const TabBarIcon = (focused, color) => {
   return (
@@ -66,13 +82,13 @@ function TabScreen() {
       <Tab.Screen
         name="Message"
         component={MessageScreen}
-        options={{title: '消息'}}
+        options={{title: '好友'}}
       />
       <Tab.Screen name="Mine" component={MeScreen} options={{title: '我的'}} />
-      
     </Tab.Navigator>
   );
 }
+
 
 const RootStack = createStackNavigator();
 const RootStackScreen = ({userToken = false}) => (
@@ -80,7 +96,7 @@ const RootStackScreen = ({userToken = false}) => (
     {userToken ? (
       <RootStack.Screen
         name="App"
-        component={TabScreen}
+        component={DefaultScreen}
         options={{
           animationEnabled: false,
         }}
