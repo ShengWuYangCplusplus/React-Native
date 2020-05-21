@@ -1,96 +1,87 @@
-import React from 'react';
-import { AsyncStorage } from 'react-native';
+import React from 'react'
+import { GiftedChat } from 'react-native-gifted-chat'
 import SocketIOClient from 'socket.io-client';
-import { GiftedChat } from 'react-native-gifted-chat';
-import { Container,Content,Text,Header } from 'native-base';
-
-const USER_NAME = '@username';
-
+import DeviceStorage from '../../Storage/DeviceStorage';
+import {Header,Text,Container} from 'native-base';
 export default class Send extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      messages: [],
-      username: null,
-      userNum: null
-    };
-    this.determineUser = this.determineUser.bind(this);
-    this.onReceivedMessage = this.onReceivedMessage.bind(this);
-    this.onSend = this.onSend.bind(this);
-    this._storeMessages = this._storeMessages.bind(this);
-
-    this.socket = SocketIOClient('http://youziweb.cn:8888');
+  state = {
+    socket:null,
+    userInfo:null,
+    userNum:0,
+    messages: [],
+  }
+  componentDidMount(){
+    let socket=SocketIOClient('http://youziweb.cn:8888');
+    this.setState({
+      socket : socket,
+      messages: [
+        {
+          _id: 1,
+          text: 'Hello developer',
+          createdAt: new Date(),
+          user: {
+            _id: 2,
+            name: 'React Native',
+            avatar: 'https://placeimg.com/140/140/any',
+          },
+        },
+      ],
+    })
+    DeviceStorage.get('userInfo').then(
+      res=>{
+        this.setState({...this.state,userInfo:res})
+        socket.emit("login", { username: "user:" + res.name });
+        socket.on("users", function (data) {
+          this.setState({...this.state,userNum:data.number})
+        }.bind(this));
+        socket.on("receive_message", function (data) {
+          console.log('receivedata',data);
+          let str;
+          if(data.avatar.indexOf('http')!==-1){
+            str=data.avatar
+          }else{
+            str=`http://youziweb.cn:8888${data.avatar}`
+          }
+          let newMessage={
+            _id: new Date(),
+            text: data.text,
+            createdAt: new Date(),
+            user: {
+              _id: data.user,
+              name: data.user,
+              avatar: str,
+              // avatar: this.state.userInfo?`http://youziweb.cn:8888${res.avatarPath}`:'http://att3.citysbs.com/200x200/hangzhou/2020/04/15/11/dd6719bd4287d9efd49434c43563a032_v2_.jpg',
+            },
+          }
+          this.setState(previousState => ({
+            messages: GiftedChat.append(previousState.messages, newMessage),
+          }))
+        }.bind(this));
+      }
+    )
     
-
-    this.socket.on('users', function (data) {
-      // alert('当前在线人数：'+data.number);
-      this.setState({ ...this.state, userNum: data.number })
-    }.bind(this));
-    this.socket.on('receive_message', this.onReceivedMessage);
-    this.determineUser();
   }
-  componentWillMount() {
-    this.socket.emit('disconnect')
+  componentWillUnmount(){
+    this.state.socket.emit('disconect')
+    this.setState({...this.state,socket:null})
   }
-  /**
-   * When a user joins the chatroom, check if they are an existing user.
-   * If they aren't, then ask the server for a username.
-   * Set the username to the component's state.
-   */
-  determineUser() {
-    AsyncStorage.getItem(USER_NAME)
-      .then((username) => {
-        // If there isn't a stored username, then fetch one from the server.
-        if (!username) {
-          this.socket.emit('login', null);
-          this.socket.on('login', (username) => {
-            AsyncStorage.setItem(USER_NAME, username);
-            this.setState({ ...this.state,username });
-          });
-        } else {
-          this.socket.emit('login', { username: 'user' + new Date().getTime() });
-          this.setState({...this.state,username });
-        }
-      })
-      .catch((e) => alert(e));
-  }
-
-  // Event listeners
-  /**
-   * When the server sends a message to this.
-   */
-  onReceivedMessage(messages) {
-    this._storeMessages(messages);
-  }
-  /**
-   * When a message is sent, send the message to the server
-   * and store it in this component's state.
-   */
   onSend(messages = []) {
-    this.socket.emit('message', messages[0]);
-    // this._storeMessages(messages);
+    console.log("???",messages[0])
+    this.state.socket.emit('message', {...messages[0],"avatar":this.state.userInfo.avatarPath});
   }
   render() {
-    var user = { _id: this.state.username || -1 };
     return (
       <Container>
-        <Header><Text>当前在线人数:{this.state.userNum}</Text></Header>
-        
+        <Header><Text >当前在线人数:{this.state.userNum}</Text></Header>
         <GiftedChat
         messages={this.state.messages}
-        onSend={this.onSend}
-        user={user}
+        onSend={messages => this.onSend(messages)}
+        user={{
+          _id: 1,
+        }}
       />
       </Container>
       
-    );
-  }
-  // Helper functions
-  _storeMessages(messages) {
-    this.setState((previousState) => {
-      return {
-        messages: GiftedChat.append(previousState.messages, messages),
-      };
-    });
+    )
   }
 }
