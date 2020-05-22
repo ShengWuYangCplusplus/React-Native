@@ -37,7 +37,7 @@ export default class Send extends React.Component {
         socket.on("receive_message", function (data) {
           console.log('receivedata',data);
           let str;
-          if(data.avatar.indexOf('http')!==-1){
+          if(data.avatar&&data.avatar.indexOf('http')!==-1){
             str=data.avatar
           }else{
             str=`http://youziweb.cn:8888${data.avatar}`
@@ -67,7 +67,7 @@ export default class Send extends React.Component {
   }
   onSend(messages = []) {
     console.log("???",messages[0])
-    this.state.socket.emit('message', {...messages[0],"avatar":this.state.userInfo.avatarPath});
+    this.state.socket.emit('message', {...messages[0],"avatar":this.state.userInfo.avatarPath||'http://pic4.zhimg.com/50/v2-f5c59ac2bbf4a83da1819eed1e8eb9c8_hd.jpg'});
   }
   render() {
     return (
