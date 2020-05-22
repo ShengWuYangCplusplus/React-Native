@@ -16,6 +16,12 @@ var port = normalizePort(process.env.PORT || '8888');
 app.set('port', port);
 
 /**
+ *  Mongodb
+ */
+var MongoClient = require("mongodb").MongoClient;
+var ObjectID = require("mongodb").ObjectID;
+const { mongodbUrl } = require("../config/mongodbConfig.js");
+/**
  * Create HTTP server.
  */
 var users = []
@@ -34,6 +40,18 @@ io.sockets.on('connection', (socket) => {
   });
 
   socket.on('message', function (data) {
+    MongoClient.connect(
+      mongodbUrl,
+      { useNewUrlParser: true, useUnifiedTopology: true },
+      (err, db) => {
+        if (err) reject("db connect error");
+        var dbo = db.db("runoob");
+        dbo.collection("messages").insertOne(data, (err, result) => {
+          if (err) reject("db execute error");
+          db.close();
+        });
+      }
+    );
     let newData = { text: data.text, user: socket.username,avatar:data.avatar }
     socket.emit('receive_message', newData);
     socket.broadcast.emit('receive_message', newData);
