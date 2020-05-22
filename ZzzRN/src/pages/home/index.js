@@ -32,34 +32,27 @@ import {
 } from 'native-base';
 import {Image, StyleSheet} from 'react-native';
 import {get} from '../../http/fetch';
-// import CheckBoxExample from './src/components/common/CheckBoxExample'
-// import SpinnerExample from './src/components/common/SpinnerExample'
-
-import DeviceStorage from '../../Storage/DeviceStorage';
-
 class App extends Component {
   constructor() {
     super();
     this.state = {
-      chosenDate: new Date(),
-      alarmList: [],
+      alarmList: [{}],
       showToast: false,
     };
-    this.setDate = this.setDate.bind(this);
   }
-  setDate(newDate) {
-    this.setState({chosenDate: newDate});
-  }
-  async loadData(req) {
+  loadData(req) {
     get('http://youziweb.cn:8888/api/alarm', req).then((res) => {
-      this.setState({
-        ...this.state,
-        alarmList: res.data,
-      });
-    });
+      if(res.code===0){
+        this.setState({
+          ...this.state,
+          alarmList: res.data,
+        });
+      }else{
+        alert(JSON.stringify(res))
+      }
+    })
   }
-  componentDidMount() {
-    console.log('hello React Native');
+  componentWillMount() {
     this.loadData({index: 0, size: 10});
   }
   render() {
@@ -212,7 +205,7 @@ class App extends Component {
               </Right>
             </CardItem>
           </Card>
-          {this.state.alarmList.map((item, idx) => (
+          {this.state.alarmList?this.state.alarmList.map((item, idx) => (
             <Card key={idx}>
               <CardItem>
                 <Left>
@@ -229,7 +222,7 @@ class App extends Component {
                 />
               </CardItem>
             </Card>
-          ))}
+          )):<Text>loading...</Text>}
         </Content>
       </Container>
     );
