@@ -9,7 +9,16 @@ module.exports = {
     {
       path: '/token',
       method: '*'
-    }, {
+    }, 
+    {
+      path: '/sms',
+      method: '*'
+    }, 
+    {
+      path: '/register',
+      method: '*'
+    }, 
+    {
       path: '/static',
       method: 'GET'
     },
