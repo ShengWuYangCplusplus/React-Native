@@ -8,7 +8,7 @@ const axios = require('axios')
 router.get("/", (req, response) => {
   let token = new Promise((resolve, reject) => {
     https.get(
-      `https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=${testWechatConfig.appid}&secret=823103a237fabeb3adb1d36a20888afb`,
+      `https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=${req.query.accessToken}&type=jsapi`,
       (res) => {
         let data = "";
         res.on("data", (chunk) => {

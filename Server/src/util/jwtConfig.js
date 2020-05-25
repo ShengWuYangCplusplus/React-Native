@@ -50,6 +50,10 @@ module.exports = {
       path: '/wxsign',
       method: '*'
     },
+    {
+      path: '/wxticket',
+      method: '*'
+    },
   ],
   path_role_arr: [
     {
