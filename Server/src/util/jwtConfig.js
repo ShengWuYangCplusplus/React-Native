@@ -41,7 +41,15 @@ module.exports = {
     {
       path: '/api/site',
       method: 'GET'
-    }
+    },
+    {
+      path: '/wxtoken',
+      method: '*'
+    },
+    {
+      path: '/wxsign',
+      method: '*'
+    },
   ],
   path_role_arr: [
     {
