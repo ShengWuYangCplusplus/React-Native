@@ -5,6 +5,8 @@ const https = require("https");
 const { wechatConfig, testWechatConfig } = require("../config/tencent-sms.js");
 const axios = require('axios')
 
+
+
 router.get("/", (req, response) => {
   let token = new Promise((resolve, reject) => {
     https.get(
