@@ -91,7 +91,7 @@ export default function Login() {
     setUserName(value);
   };
   const getSmsCode=()=>{
-    alert('获取验证码')
+    console.log("获取验证码",phone)
     apis.System.getSmsCode({phoneNumber:phone}).then(
       res=>{
         if(res.des=='success'){
